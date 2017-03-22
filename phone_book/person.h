@@ -26,9 +26,13 @@ class Person{
       void setGroup(const string& group);
       void setMemo(const string& memo);
 
-      friend ifstream& operator << (ifstream&, Person&);
-
-
-
+      bool operator == (const Person&);
+      bool operator < (const Person&, const Person&);
+      friend Person operator = (const Person&);
+      friend ifstream& operator >> (ifstream&, Person&);
+      friend ofstream& operator << (ofstream&, const Person&);
+      friend ostream& operator << (ostream&, const Person&);
 
 }
+
+#endif
