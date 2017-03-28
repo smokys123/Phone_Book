@@ -1,106 +1,129 @@
-#include <person.h>
+#include "person.h"
+#include <cstdlib>
+#include <string>
 #include <iostream>
 
 using namespace std;
 
-Person::Person(const string& new_Name, const string& new_Phonenum, const string &new_Group, const string& new_Memo){
-    name = new string(new_Name);
-    phone_num = new string(new_Phonenum);
-    group = new string(new_Group);
-    memo = new string(new_Memo);
+//Person class 생성자 소멸자
+//인자를 받아서 Person 객체 생성하는 생성자 method
+Person::Person(const string& newName, const string& newNumber, const string& newGroup, bool newFavorite) {
+	name = new string(newName);
+	group = new string(newGroup);
+	number = new string(newNumber);
+	favorite = newFavorite;
 }
 
-Person::Person(const Person& new_Person){
-    name = new string(*new_Person.name);
-    phone_num = new string(*new_Person.phone_num);                                      
-    group = new string(*new_Person.group);
-    memo = new string(*new_Person.memo);
+//Person class를 받아와 객체를 생성하는 생성자 method
+Person::Person(const Person& per) {
+	name = new string(*per.name);
+	group = new string(*per.group);
+	number = new string(*per.number);
+	favorite = (per.favorite);
+}
+//Person 객체 소멸자
+Person::~Person() {
+	delete name;
+	delete group;
+	delete number;
 }
 
-Person::Person(){
-    delete name;
-    delete phone_num;
-    delete group;
-    delete memo;
+//Person 객체를 출력하기 위한 연산자 오버로딩
+ostream& operator<<(ostream& os, const Person& per) {
+	os << "이름 : " << *per.name << endl;
+	os << "번호 : " << *per.number << endl;
+	os << "그룹 : " << *per.group << endl;
+	os << "favorite: " << per.favorite << endl;
+	return os;
 }
 
-Person::ShowInfo(){
-    cout << "Name : " << name << endl;
-    cout << "Phone Number : " << phone_num << endl;
-    cout << "Group name : " << group << endl;
-    cout << "Memo : " << memo << endl;
+//Person class의 내용을 파일에 저장하는 연산자 오버로딩
+ofstream& operator<<(ofstream& fout, const Person& per) {
+	fout << *per.name << endl;
+	fout << *per.number << endl;
+	fout << *per.group << endl;
+	fout << per.favorite << endl;
+	return fout;
 }
 
-void Person::setName(const string& new_Name){
-    delete neme;
-    name = new string(new_Name);
+//파일에서 Person class의 내용을 읽어와서 저장하는 연산자 오버로딩
+ifstream& operator >> (ifstream& fin, Person& per) {
+	(fin >> *per.name).get();
+	(fin >> *per.number).get();
+	(fin >> *per.group).get();
+	(fin >> per.favorite).get();
+	return fin;
 }
 
-void Person::setPhone_num(const string& new_Phonenum){
-    delete phone_num;
-    phone_num = new string(new_Phonenum);
+//Person class간의 대입을 위한 method
+Person& Person::operator=(const Person& per) {
+	delete name;
+	delete number;
+	delete group;
+	this->name = new string(*per.name);
+	this->number = new string(*per.number);
+	this->group = new string(*per.group);
+	this->favorite = per.favorite;
+	return *this;
 }
 
-void Person::setGroup(const string& new_Group){
-    delete group;
-    group = new string(new_Group);
+//Person class간의 비교를 위한 method
+bool Person::operator==(const Person& Person) const {
+	return (*name == *Person.name) & (*group == *Person.group) & (*number == *Person.number) &(favorite == Person.favorite);
 }
 
-void Person::setMemo(const string& new_Memo){
-    delete memo;
-    memo = new string(new_memo);
+//Person class의 정렬을 위해
+//class안의 namedmf 비교 후 같을 시 number로 비교하는 method
+bool operator<(const Person& firstPer, const Person& secondPer) {
+	if (*firstPer.name != *secondPer.name)
+		return *firstPer.name < *secondPer.name;
+	if (*firstPer.number != *secondPer.number)
+		return *firstPer.number < *secondPer.number;
+	return true;
 }
 
-Person& Person::operator=(const Person& p){
-    delete this->name;
-    delete this->phone_num;
-    delete this->group;
-    delete this->memo;
-    this->name = new string(*p.name);
-    this->phone_num = new string(*p.phone_num);
-    this->group = new string(*p.group);
-    this->memo = new string(*p.memo);
+//Person class에 대한 setter
+//class의 name에 대입하는 method 
+void Person::setName(const string& newName) {
+	delete name;
+	name = new string(newName);
 }
 
-bool Person::operator==(const Person& p){
-    return (*name==*p.name) & (*phone_num==*p.phone_num) & (*group==*p.group) & (*memo==*p.memo);
+//class의 group 변수에 대입하는 method
+void Person::setGroup(const string& newGroup) {
+	delete group;
+	group = new string(newGroup);
 }
 
-bool Person::operator<(const Person& p1, const Person& p2){
-    if(*p1.name != *p2.name)
-        return *p1.name < *p2.name;
-    if(*p1.phone_num != *p2.phone_num)
-        return *p1.phone_num < *p2.phone_num;
-    else 
-       return true; 
+//class의 number 변수에 대입하는 method
+void Person::setNumber(const string& newNumber) {
+	delete number;
+	number = new string(newNumber);
 }
 
-ifstream& Person::operator>>(ifstream& file_in, Person& p){
-    file_in >> *p.name;
-    file_in >> *p.phoe_num;
-    file_in >> *p.group;
-    file_in >> *p.memo;
-    return file_in;
+//class의 favorite 변수에 대입하는 method
+void Person::setFavorite(bool newFavorite) {
+	favorite = newFavorite;
+
+}
+ //Person 객체의 attribute를 반환하는 getter
+//class의 name을 반환하는 method
+string Person::getName() const {
+	return *name;
 }
 
-ofstream& Person::operator<<(ofstream& file_out, Person& p){
-    file_out << *p.name << "\n";
-    file_out << *p.phone_num << "\n";
-    file_out << *p.group << "\n";
-    file_out << *p.memo << "\n";
-    return file_out
+//class의 group을 반환하는 method
+string Person::getGroup() const {
+	return *group;
 }
 
+//class의 number를 반환하는 method
+string Person::getNumber() const {
 
+	return *number;
+}
 
-
-
-
-
-
-
-
-
-
-
-
+//class의 favorite를 반환하는 method
+bool Person::getFavorite() const {
+	return favorite;
+}
